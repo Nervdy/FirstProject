@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>百度一下，你就知道</title>
+  <style>
+    .container {
+      text-align: center;
+      position: relative;
+      top: 240px;
+    }
+    .container img {
+      width: 270px;
+      height: 129px;
+      margin-bottom: 20px;
+    }
+    .container .input-c input{
+      outline: none;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 540px;
+      height: 36px;
+      font-size: 16px;
+      line-height: 22px;
+      box-sizing: border-box;
+    }
+    .container .input-c input:focus {
+      border-color: #4791ff transparent #4791ff #4791ff;
+    }
+    .container .input-c button {
+      vertical-align: top;
+      margin-left: -6px;
+      border: none;
+      width: 100px;
+      height: 36px;
+      color: #fff;
+      font-size: 15px;
+      letter-spacing: 1px;
+      background: #3385ff;
+      border-bottom: 1px solid #2d78f4;
+      outline: medium;
+      -webkit-appearance: none;
+      -webkit-border-radius: 0;
+      cursor: pointer;
+    }
+    .container .input-c button:hover {
+      background: #317ef3;
+      border-bottom: 1px solid #2868c8;
+      box-shadow: 1px 1px 1px #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://www.baidu.com/img/bd_logo1.png" alt="">
+    
+    <div class="input-c">
+      <input type="text" id="input_text">
+      <button id="baidu_btn">百度一下</button>
+    </div>
+  </div>
+  <script>
+    const baidu_url = 'https://www.baidu.com/s?ie=utf-8&tn=baidu&wd='
+    let btn = document.querySelector('#baidu_btn'),
+        input = document.querySelector('#input_text')
+
+    btn.addEventListener('click', function (event) {
+      if (!input.value) return
+      location.href = `${baidu_url}${input.value}`
+    })
+  </script>
+</body>
+</html>
