@@ -37,6 +37,9 @@ def nav():
         
     res = app.make_response(json.dumps(res_data))
     res.headers['Access-Control-Allow-Origin'] = '*'
+
+    conn.close()
+    
     return res
 
 
