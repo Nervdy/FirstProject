@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/x-icon" href="https://assets-cdn.github.com/favicon.ico">
   <title>Nav</title>
   <style>
     * {
@@ -15,7 +17,7 @@
       width: 100%;
       height: 100%;
       font-size: 16px;
-      /* background: #ccc; */
+      font-family: "Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
     }
     .container {
       width: 100%;
@@ -26,7 +28,7 @@
       top: 0;
       width: 100%;
       height: 60px;
-      background: #2f53ea;
+      background: #006699;
       box-shadow: 0 0px 8px 4px #ccc;
       text-align: center;
     }
@@ -36,34 +38,188 @@
       line-height: 60px;
     }
     .top-icon {
-      position: absolute;
-      transition: all 1s;
-      margin: 16px;
+      position: fixed;
+      z-index: 999;
+      transition: all .5s;
+      top: 16px;
+      left: 16px;
       width: 40px;
       height: 26px;
-      border-radius: 0 10px 10px 0;
+      border-radius: 0 5px 5px 0;
       background: linear-gradient(to bottom, white 20%,transparent 21%,transparent 40%,white 41%,white 60%,transparent 61%,transparent 80%,white 81%,white 100%);
+      cursor: pointer;
     }
-    .top-icon:hover {
-      border-radius: 10px 0 0 10px;
+    .left-c {
+      position: fixed;
+      z-index: 1;
+      width: 160px;
+      height: 100%;
+      background: #006699;
+      box-shadow: 0 0px 15px #000;
+    }
+    .left-c .nav li {
+      height: 60px;
+      line-height: 60px;
+      font-size: 20px;
+      font-weight: bolder;
+      text-indent: 1.5em;
+      color: white;
+      cursor: pointer;
+      transition: all .5s;
+    }
+    .left-c .nav li p {
+      width: 120px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .left-c .nav li:hover:not(.nav-title) {
+      background: #003366;      
+    }
+    .left-c .nav .nav-title {
+      background: #003366;
+      cursor: default;
+    }
+    .content {
+      width: 70%;
+      height: 100%;
+      box-sizing: border-box;
+      padding-top: 60px;
+      margin: auto;
+      text-align: center;
+    }
+    .content .input-box {
+      display: inline-block;
+      margin-top: 50px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div id="app" class="container">
+    <div class="top-icon toggle-btn"></div>
     <div class="top">
-      <div class="top-icon"></div>
       <h1>Title</h1>
     </div>
     <div class="left-c">
       <ul class="nav">
-        <!-- {% for item in nav %}
-          <li class="item">{{ item }}</li>
-        {% endfor %} -->
-        <li>One</li>
-        <li>Two</li>
+        <li class="nav-title"></li>
+        {% for item in nav %}
+          <li>
+            <p>{{ item }}</p>
+          </li>
+        {% endfor %}
       </ul>
     </div>
+    <div class="content">
+      <div class="input-box">
+        <input type="text" id="nav-input">
+        <button id="nav-btn">添加Nav</button>
+      </div>
+    </div>
   </div>
+
+  <script src="./static/js/jquery.slim.min.js"></script>
+  <script>
+    ;((app) => {
+      class Nav {
+        /**
+         * param: el [String] default = ['.left-c']
+         * param: position [String] ['left','right','top','bottom'] = default ['left']
+         * param: show [Boolean] default [false]
+        */
+        constructor ({ el='.left-c', position='left', show=false } = {}) {
+          const POSITION = ['left', 'right', 'top', 'bottom']
+
+          this.$el = app.find(el)
+          this._position = POSITION.includes(position) ? position : 'left'
+
+          this._define_show(show)
+          this._init_style()
+        }
+
+        _init_style () {
+          this._position_value = ['left', 'right'].includes(this._position) ? this.$el.width() : this.$el.height()
+
+          this.$el.css({
+            'transition': 'all .5s',
+            'position': 'fixed',
+            [this._position]: this.show ? '0px' : `-${this._position_value}px`
+          })
+        }
+
+        _define_show (show) {
+          let isshow = show
+          Object.defineProperty(this, 'show', {
+            get () {
+              return isshow
+            },
+            set (val) {
+              if (val)
+                this.show_el()
+              else 
+                this.hide_el()
+
+              isshow = val
+            }
+          })
+        }
+
+        show_el () {
+          this.$el.css(this._position, '0px')
+        }
+
+        hide_el () {
+          this.$el.css(this._position, `-${this._position_value}px`)
+        }
+      }
+
+      let nav = new Nav({show: true})
+      let btn = app.find('.toggle-btn')
+      toggleBtnPosition()
+
+      btn.on('click', (event) => {
+        nav.show = !nav.show
+        toggleBtnPosition()
+      })
+
+      function toggleBtnPosition () {
+        if (nav.show)
+          btn.css('left', '90px')
+        else
+          btn.css('left', '16px')
+      }
+
+    })($('#app'))
+  </script>
+  <script>
+    let input = $('#nav-input')
+    let btn = $('#nav-btn')
+
+    btn.click(() => {
+      // 获取输入框的内容
+      let value = input.val()
+      if (!value) return
+      
+      let xml = new XMLHttpRequest()
+
+      xml.onreadystatechange = function () {
+        if (xml.readyState == 4 && xml.status == 200) {
+
+          let result = JSON.parse(xml.responseText)
+
+          if (result.success == 0) {
+            confirm('添加成功')
+          } else {
+            confirm('添加成功')            
+          }
+          location.reload()
+        }
+      }
+      
+      // 发送post请求，把输入框的内容发送到后端 /nav 地址
+      xml.open('post', location.origin + '/nav')
+      xml.send(JSON.stringify({item: value}))
+    })
+  </script>
 </body>
 </html>
