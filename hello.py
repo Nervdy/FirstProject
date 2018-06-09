@@ -16,6 +16,7 @@ def baidu():
 def nav_html():
     conn = NavModel.NavModel()
     nav_data = conn.select_all()
+    conn.close()
     return render_template('nav.html', nav=nav_data)
 
 @app.route('/nav', methods=['GET', 'POST'])
@@ -39,7 +40,7 @@ def nav():
     res.headers['Access-Control-Allow-Origin'] = '*'
 
     conn.close()
-    
+
     return res
 
 
